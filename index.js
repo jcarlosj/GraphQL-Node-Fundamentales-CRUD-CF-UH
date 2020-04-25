@@ -2,9 +2,11 @@ const
     express = require( 'express' ),
     app = express(),
     { buildSchema } = require( 'graphql' ),
-    PORT = 8080;
+    gqlHttp = require( 'express-graphql' ),
+    PORT = 8080,
+    courses = require( './courses' );
 
-/** Define Schema */
+/** Define Schema (Schema Definition Language)*/
 const theSchema = buildSchema(`
     type Course {
         id: ID!
@@ -13,12 +15,24 @@ const theSchema = buildSchema(`
     }
     type Query {
         getCourses: [Course]
-    }
+    } 
 `);
+
+/** Midleware */
+app .use( '/graphql', gqlHttp({
+    schema: theSchema,
+    rootValue: {        // Raiz de consultas de GraphQL
+        getCourses() {
+            return courses;
+        }
+    },
+    graphiql: true      // Herramienta para el navegador para validar consultas de GraphQL
+}));
 
 /** Rutas */
 app .get( '/', ( request, response ) => {
     response .send( '<h1>Preparando API con GraphQL</h1>' );
+    console .log( courses );
 });
 
 /** Lanza servidor */
