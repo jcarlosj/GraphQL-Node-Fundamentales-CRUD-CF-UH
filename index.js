@@ -22,7 +22,7 @@ const theSchema = buildSchema(`
         views: Int
     }
     type Query {
-        getCourses: [Course]
+        getCourses( page: Int, limit: Int = 1 ): [Course]
         getCourse( id: ID! ) : Course
     } 
     type Mutation {
@@ -36,7 +36,13 @@ const theSchema = buildSchema(`
 app .use( '/graphql', gqlHttp({
     schema: theSchema,
     rootValue: {        // Raiz de consultas de GraphQL
-        getCourses() {
+        getCourses({ page, limit }) {
+            
+            if( page !== undefined ) {
+                console .log( 'pagina', page, 'muestra', limit );
+                return courses .slice( ( page - 1 ) * limit, ( page ) * limit );
+            }
+            
             return courses;
         },
         getCourse({ id }) {     // Destructuring
