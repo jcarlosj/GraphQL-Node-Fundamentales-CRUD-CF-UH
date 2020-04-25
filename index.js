@@ -3,8 +3,9 @@ const
     app = express(),
     { buildSchema } = require( 'graphql' ),
     gqlHttp = require( 'express-graphql' ),
-    PORT = 8080,
-    courses = require( './courses' );
+    PORT = 8080;
+
+let courses = require( './courses' );
 
 /** Define Schema (Schema Definition Language)*/
 const theSchema = buildSchema(`
@@ -12,6 +13,9 @@ const theSchema = buildSchema(`
         id: ID!
         title: String!
         views: Int
+    }
+    type Alert {
+        message: String
     }
     input CourseInput {
         title: String!
@@ -24,6 +28,7 @@ const theSchema = buildSchema(`
     type Mutation {
         addCourse( input: CourseInput ) : Course
         updateCourse( id: ID!, input: CourseInput ) : Course
+        deleteCourse( id: ID! ) : Alert
     }
 `);
 
@@ -57,6 +62,11 @@ app .use( '/graphql', gqlHttp({
             courses[ index ] = newCourse;
 
             return newCourse;
+        },
+        deleteCourse({ id }) {
+            courses = courses .filter( course => id != course .id );
+
+            return { message: `El curso con id ${ id } fue eliminado` }
         }
     },
     graphiql: true      // Herramienta para el navegador para validar consultas de GraphQL
