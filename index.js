@@ -17,6 +17,9 @@ const theSchema = buildSchema(`
         getCourses: [Course]
         getCourse( id: ID! ) : Course
     } 
+    type Mutation {
+        addCourse( title: String!, views: Int ) : Course
+    }
 `);
 
 /** Midleware */
@@ -30,6 +33,14 @@ app .use( '/graphql', gqlHttp({
             console .log( 'Course ID', id );
 
             const course = courses .find( course => id == course .id );
+            return course;
+        },
+        addCourse({ title, views }) {
+            const 
+                id = courses .length + 1,
+                course = { id, title, views };
+
+            courses .push( course );
             return course;
         }
     },
