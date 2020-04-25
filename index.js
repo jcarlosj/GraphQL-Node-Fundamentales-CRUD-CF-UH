@@ -15,6 +15,7 @@ const theSchema = buildSchema(`
     }
     type Query {
         getCourses: [Course]
+        getCourse( id: ID! ) : Course
     } 
 `);
 
@@ -24,6 +25,12 @@ app .use( '/graphql', gqlHttp({
     rootValue: {        // Raiz de consultas de GraphQL
         getCourses() {
             return courses;
+        },
+        getCourse({ id }) {     // Destructuring
+            console .log( 'Course ID', id );
+
+            const course = courses .find( course => id == course .id );
+            return course;
         }
     },
     graphiql: true      // Herramienta para el navegador para validar consultas de GraphQL
