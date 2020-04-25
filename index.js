@@ -40,7 +40,7 @@ app .get( '/', ( request, response ) => {
     /** Habilita consulta a GraphQL */
     graphql(            // Toda consulta retorna una Promesa
         schema,         // Nombre del Schema
-        `{ message }`   // Consulta (en este caso al campo llamado 'message')
+        `{ message, course { title } }`   // Consulta (en este caso al campo llamado 'message')
     ) .then( data => response .json( data ) )
       .catch( error => console .log( error ) );
 
