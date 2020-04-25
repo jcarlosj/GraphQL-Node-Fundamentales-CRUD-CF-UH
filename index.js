@@ -1,7 +1,7 @@
 const 
     express = require( 'express' ),
     app = express(),
-    { GraphQLSchema, GraphQLObjectType, GraphQLString } = require( 'graphql' ),
+    { GraphQLSchema, GraphQLObjectType, GraphQLString, graphql } = require( 'graphql' ),
     PORT = 8080;
 
 /** Define Schema de GraphQL */
@@ -21,7 +21,13 @@ const schema = new GraphQLSchema({
 
 /** Rutas */
 app .get( '/', ( request, response ) => {
-    response .send( '<h1>Servidor HTTP con Express!</h1>' );
+    /** Habilita consulta a GraphQL */
+    graphql(            // Toda consulta retorna una Promesa
+        schema,         // Nombre del Schema
+        `{ message }`   // Consulta (en este caso al campo llamado 'message')
+    ) .then( data => response .json( data ) )
+      .catch( error => console .log( error ) );
+
 });
 
 /** Lanza servidor */
