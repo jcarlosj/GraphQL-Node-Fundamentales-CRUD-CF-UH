@@ -13,13 +13,17 @@ const theSchema = buildSchema(`
         title: String!
         views: Int
     }
+    input CourseInput {
+        title: String!
+        views: Int
+    }
     type Query {
         getCourses: [Course]
         getCourse( id: ID! ) : Course
     } 
     type Mutation {
-        addCourse( title: String!, views: Int ) : Course
-        updateCourse( id: ID!, title: String!, views: Int ) : Course
+        addCourse( input: CourseInput ) : Course
+        updateCourse( id: ID!, input: CourseInput ) : Course
     }
 `);
 
@@ -35,19 +39,20 @@ app .use( '/graphql', gqlHttp({
             
             return course;
         },
-        addCourse({ title, views }) {
+        addCourse({ input }) {
             const 
+                { title, views } = input,       // Destructuring
                 id = courses .length + 1,
                 course = { id, title, views };
 
             courses .push( course );
             return course;
         }, 
-        updateCourse({ id, title, views }) {
+        updateCourse({ id, input }) {
             const 
                 index = courses .findIndex( course => id == course .id );
                 course = courses[ index ],
-                newCourse = Object .assign( course, { title, views } );
+                newCourse = Object .assign( course, input );     // Spread
             
             courses[ index ] = newCourse;
 
