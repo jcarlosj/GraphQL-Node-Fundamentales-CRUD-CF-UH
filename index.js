@@ -1,7 +1,23 @@
 const 
     express = require( 'express' ),
     app = express(),
+    { GraphQLSchema, GraphQLObjectType, GraphQLString } = require( 'graphql' ),
     PORT = 8080;
+
+/** Define Schema de GraphQL */
+const schema = new GraphQLSchema({
+    query: new GraphQLObjectType({
+        name: "RootQueryType",
+        fields: {
+            message: {
+                type: GraphQLString,
+                resolve() {
+                    return 'Hola mundo!';
+                }
+            }
+        }
+    })
+});
 
 /** Rutas */
 app .get( '/', ( request, response ) => {
