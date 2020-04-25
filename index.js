@@ -19,6 +19,7 @@ const theSchema = buildSchema(`
     } 
     type Mutation {
         addCourse( title: String!, views: Int ) : Course
+        updateCourse( id: ID!, title: String!, views: Int ) : Course
     }
 `);
 
@@ -31,8 +32,7 @@ app .use( '/graphql', gqlHttp({
         },
         getCourse({ id }) {     // Destructuring
             console .log( 'Course ID', id );
-
-            const course = courses .find( course => id == course .id );
+            
             return course;
         },
         addCourse({ title, views }) {
@@ -42,6 +42,16 @@ app .use( '/graphql', gqlHttp({
 
             courses .push( course );
             return course;
+        }, 
+        updateCourse({ id, title, views }) {
+            const 
+                index = courses .findIndex( course => id == course .id );
+                course = courses[ index ],
+                newCourse = Object .assign( course, { title, views } );
+            
+            courses[ index ] = newCourse;
+
+            return newCourse;
         }
     },
     graphiql: true      // Herramienta para el navegador para validar consultas de GraphQL
