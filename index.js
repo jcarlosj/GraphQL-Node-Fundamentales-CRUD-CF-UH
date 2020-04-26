@@ -47,7 +47,8 @@ app .use( '/graphql', gqlHttp({
         },
         getCourse({ id }) {     // Destructuring
             console .log( 'Course ID', id );
-            
+            let course = courses .find( course => id == course .id );
+
             return course;
         },
         addCourse({ input }) {
